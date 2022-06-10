@@ -1,0 +1,57 @@
+<!-- templates/base.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Employee Manager</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/stylesheet.css') }}" />
+</head>
+<style>
+</style>
+<body>
+<div id="main">
+  <div class="container">
+    <nav>
+      <div class="nav-fostrap">
+        <ul>
+          <li><a href="{{ url_for('api_main.index') }}">Home</a></li>
+          <li><a href="{{ url_for('api_main.create_emp_record') }}">Create New</a></li>
+          <li><a>View Employee<span class="arrow-down"></span></a>
+            <ul class="dropdown">
+              <li><a href="{{ url_for('api_main.get_emp_records') }}">All</a></li>
+              <li><a href="#">Search by Name</a></li>
+              <li><a href="#">Search By Id</a></li>
+              <li><a href="#">Search by DOB</a></li>
+              <li><a href="#">Search by DOJ</a></li>
+            </ul>
+          </li>
+          <li><a href="#">Update Employee</a></li>
+          <li><a href="#">Delete Employee</a></li>
+        </ul>
+      </div>
+      <div class="nav-bg-fostrap">
+        <div class="navbar-fostrap"> <span></span> <span></span> <span></span> </div>
+        <a href="{{ url_for('api_main.index') }}" class="title-mobile">Employee Manager</a>
+      </div>
+    </nav>
+    <div class='content'>
+    </div>
+</div>
+</div>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <script>
+      var messages = {{ messages | safe }};
+      for (var i=0; i<messages.length; i++) {
+        alert(messages[i]);
+      }
+    </script>
+  {% endif %}
+{% endwith %}
+{% block content %}
+{% endblock %}
+
+</body>
+
+</html>
