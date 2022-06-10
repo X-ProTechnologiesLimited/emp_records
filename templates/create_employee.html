@@ -1,0 +1,70 @@
+<!-- templates/create_employee.html -->
+
+{% extends "base.html" %}
+<p>** Mandatory Fields.</p>
+{% block content %}
+<div class="container">
+    <h2 class="title">Create Employee Record</h2>
+    <div class="box">
+        <form method="POST" action="/employee/new">
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" name="firstname" placeholder="Employee Firstname"  autofocus="" autocomplete="off" required>
+                </div>
+            </div>
+  <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="lastname" placeholder="Employee Lastname" autofocus="" required>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="title" placeholder="Job Title" autofocus="" required>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+
+                    <input class="input is-large" type="date" name= "dob" id="dob" placeholder="Date of Birth" autofocus="">
+                    <label for="dob">Date of Birth</label>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="date" name= "doj" id="doj" placeholder="Employed Since" autofocus="" required>
+                    <label for="doj">Employed Since</label>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="number" step="1" pattern="\d+" name="salary" placeholder="Annual Salary" autofocus="">
+                </div>
+            </div>
+            <br>
+            <button class="button is-block is-info is-medium is-fullwidth">Create Employee</button>
+        </form>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.js"
+          integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+          crossorigin="anonymous"></script>
+
+  <script type="text/javascript">
+    $(document).on('submit','#todo-form',function(e)
+                   {
+      console.log('hello');
+      e.preventDefault();
+      $.ajax({
+        type:'POST',
+        url:'/',
+        data:{
+          todo:$("#todo").val()
+        },
+        success:function()
+        {
+          alert('saved');
+        }
+      })
+    });
+  </script>
+{% endblock %}
