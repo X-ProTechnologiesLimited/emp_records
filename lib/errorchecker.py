@@ -29,6 +29,7 @@ def error_response_creator(message):
     with open(html_outfile, 'w') as outf:
         outf.write('{% extends "base.html" %}')
         outf.write('{% block content %}')
+        outf.write('<p></p>')
         outf.write('<div class="container">')
         outf.write(output)
         outf.write('</div>')
@@ -59,5 +60,27 @@ def no_employees_in_db():
     message = {
             'status': 404,
             'message': 'No Employees are found in the database'
+        }
+    return error_response_creator(message)
+
+
+@errorchecker.errorhandler(404)
+def no_employees_match():
+    message = {
+            'status': 404,
+            'message': 'No Employees are matched with the search conditions'
+        }
+    return error_response_creator(message)
+
+
+@errorchecker.errorhandler(502)
+def input_missing(input_field):
+    if input_field == 'EmpId_Radio':
+        message_field = 'Please select an Asset radio button from the list.'
+    else:
+        message_field = 'input field: ' + input_field + ' missing for this request'
+    message = {
+            'status': 502,
+            'message': message_field
         }
     return error_response_creator(message)
