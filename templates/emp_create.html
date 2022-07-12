@@ -1,0 +1,145 @@
+<!-- templates/create_employee.html -->
+
+{% extends "base.html" %}
+<p>** Mandatory Fields.</p>
+{% block content %}
+<style>
+label {
+  display: inline-block;
+  width: 140px;
+  text-align: left;
+</style>
+<div class="container">
+    <h2 class="title">Create Employee Record</h2>
+    <h3 class="title">Employee Profile</h3>
+    <div class="box">
+        <form method="POST" action="/employee/new">
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" list="sal" id="per_title" type="text" name="per_title" placeholder="Title" autofocus="">
+                    <datalist id="sal">
+                      <option value="Mr">
+                      <option value="Mrs">
+                      <option value="Ms">
+                      <option value="Dr">
+                    </option>
+                    </datalist>
+                    </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" id="firstname" name="firstname" onkeyup="expand(this);" placeholder="Employee Firstname"  autofocus="" autocomplete="off" required>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" id="lastname" name="lastname" onkeyup="expand(this);" placeholder="Employee Lastname"  autofocus="" autocomplete="off">
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" id="title" name="title" onkeyup="expand(this);" placeholder="Job Title"  autofocus="" autocomplete="off" required>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <select class="input is-large" id="type" name="type" placeholder="Employment Type" required>
+                        <option value="Permanent">Permanent</option>
+                        <option value="Contractor">Contractor</option>
+                        <option value="FTC">FTC</option>
+                        <option value="Undergraduate">Undergraduate</option>
+                        <option value="Apprentice">Apprentice</option>
+                    </option>
+                    </select>
+                    </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" list="emp_status" id="status" name="status" placeholder="Employment Status" autocomplete="off" autofocus="" required>
+                    <datalist id="emp_status">
+                      <option value="Active">
+                      <option value="Resigned">
+                      <option value="Terminated">
+                      <option value="Sabbatical">
+                    </option>
+                    </datalist>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="textbox-n" type="text" id="dob" name= "dob" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Date of Birth" autofocus="" required>
+                    <input class="textbox-n" type="text" id="doj" name= "doj" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Employed Since" autofocus="" required>
+                    <input class="textbox-n" type="text" id="dol" name= "dol" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Date of Leaving" autofocus="">
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" id="salary" type="number" step="1" pattern="\d+" name="salary" placeholder="Annual Salary" autofocus="" required>
+                </div>
+            </div>
+            <p><h3 class="title">Employee Contact</h3></p>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" id="address" type="text" name="address" onkeyup="expand(this);" placeholder="Address" autofocus="">
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" id="phone" type="number" step="1" pattern="\d+" name="phone" placeholder="Phone Number" autofocus="">
+                    <input class="input is-large" id="mobile" type="number" step="1" pattern="\d+" name="mobile" placeholder="Mobile Number" autofocus="" required>
+                    <input class="input is-large" type="text" id="email" name="email" onkeyup="expand(this);" placeholder="Email" autofocus="" required>
+                </div>
+            </div>
+            <p><h3 class="title">Employee Bank Details</h3></p>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" id="bank" name="bank" onkeyup="expand(this);" placeholder="Bank Name" autofocus="">
+                    <input class="input is-large" type="number" id="sortcode" step="1" pattern="\d+" name="sortcode" placeholder="Sort Code" autofocus="">
+                    <input class="input is-large" type="number" id="account" step="1" pattern="\d+" name="account" placeholder="Account Number" autofocus="">
+                </div>
+            </div>
+            <br>
+            <button class="button is-block is-info is-medium is-fullwidth">Create Employee</button>
+        </form>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.js"
+          integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+          crossorigin="anonymous"></script>
+
+  <script type="text/javascript">
+    $(document).on('submit','#todo-form',function(e)
+                   {
+      console.log('hello');
+      e.preventDefault();
+      $.ajax({
+        type:'POST',
+        url:'/',
+        data:{
+          todo:$("#todo").val()
+        },
+        success:function()
+        {
+          alert('saved');
+        }
+      })
+    });
+
+    function expand(textbox) {
+    if (!textbox.startW) { textbox.startW = textbox.offsetWidth; }
+
+    var style = textbox.style;
+
+    //Force complete recalculation of width
+    //in case characters are deleted and not added:
+    style.width = 0;
+
+    //http://stackoverflow.com/a/9312727/1869660
+    var desiredW = textbox.scrollWidth;
+    //Optional padding to reduce "jerkyness" when typing:
+    desiredW += textbox.offsetHeight;
+
+    style.width = Math.max(desiredW, textbox.startW) + 'px';
+}
+  </script>
+{% endblock %}

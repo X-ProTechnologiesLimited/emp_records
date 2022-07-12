@@ -8,6 +8,23 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/stylesheet.css') }}" />
 </head>
 <style>
+  .wrapper {
+  text-align: center;
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+#myInput {
+  background-image: url('/static/styles/filter.png'); /* Add a search icon to input */
+  background-position: 3px 3px; /* Position the search icon */
+  background-repeat: no-repeat; /* Do not repeat the icon image */
+  width: 100%; /* Full-width */
+  font-size: 14px; /* Increase font-size */
+  padding: 8px 16px 10px 40px; /* Add some padding */
+  border: 1px solid #ddd; /* Add a grey border */
+  margin-bottom: 12px; /* Add some space below the input */
+}
 </style>
 <body>
 <div id="main">
@@ -15,23 +32,11 @@
     <nav>
       <div class="nav-fostrap">
         <ul>
-          <li><a href="{{ url_for('api_main.index') }}">Home</a></li>
-          <li><a href="{{ url_for('api_main.create_emp_record') }}">Create New</a></li>
-          <li><a>View Employee<span class="arrow-down"></span></a>
-            <ul class="dropdown">
-              <li><a href="{{ url_for('api_main.get_emp_records') }}">All</a></li>
-              <li><a href="#">Search by Name</a></li>
-              <li><a href="#">Search By Id</a></li>
-              <li><a href="#">Search by DOB</a></li>
-              <li><a href="#">Search by DOJ</a></li>
-            </ul>
-          </li>
-          <li><a href="#">Update Employee</a></li>
-          <li><a href="#">Delete Employee</a></li>
+          <li><a href="{{ url_for('api_main.index') }}">Employee Manager</a></li>
         </ul>
       </div>
       <div class="nav-bg-fostrap">
-        <div class="navbar-fostrap"> <span></span> <span></span> <span></span> </div>
+        <div class="navbar-fostrap"> <span></span> <span></span> <span></span>  </div>
         <a href="{{ url_for('api_main.index') }}" class="title-mobile">Employee Manager</a>
       </div>
     </nav>
@@ -51,7 +56,21 @@
 {% endwith %}
 {% block content %}
 {% endblock %}
+<script>
+const myFunction = () => {
+  const trs = document.querySelectorAll('#Error tr:not(.header)')
+  const filter = document.querySelector('#myInput').value
+  const regex = new RegExp(filter, 'i')
+  const isFoundInTds = td => regex.test(td.innerHTML)
+  const isFound = childrenArr => childrenArr.some(isFoundInTds)
+  const setTrStyleDisplay = ({ style, children }) => {
+    style.display = isFound([
+      ...children // <-- All columns
+    ]) ? '' : 'none'
+  }
 
+  trs.forEach(setTrStyleDisplay)
+}
+</script>
 </body>
-
 </html>

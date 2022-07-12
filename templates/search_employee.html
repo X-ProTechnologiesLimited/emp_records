@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    label {
+  display: inline-block;
+  width: 140px;
+  text-align: left;
+}​
+.wrapper {
+  text-align: center;
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+select {
+     margin-bottom: 20px;
+     margin-top: 20px;
+   }
+</style>
+<script>
+function reset_options() {
+    document.getElementById('search_list').options.length = 0;
+    return true;
+}
+
+</script>
+<body onbeforeunload='reset_options()'>
+<div class="container">
+    <h3 class="title">Search Employee</h3>
+    <div class="box">
+        <form method="POST" action="/employee/search">
+            <div class="field">
+                <div class="control">
+                    <label for="search_list">Search By</label>
+                    <select class="input is-large" id="search_list" name="Field" placeholder="Field" onchange="yesnoCheck(this);" required>
+                        <option value="Option">Select an option</option>
+                        <option value="Name">Name</option>
+                        <option value="Date of Birth">Date of Birth</option>
+                        <option value="Date of Joining">Date of Joining</option>
+                        <option value="Email">Email</option>
+                        <option value="Mobile">Mobile</option>
+                    </select>
+                </div>
+            <script type="text/javascript">
+                function yesnoCheck(that) {
+                    if (that.value == "Date of Birth" || that.value == 'Date of Joining') {
+                        document.getElementById("date").style.display = "block";
+                        document.getElementById("keyword").style.display = "none";
+                        document.getElementById("main_search").removeAttribute("disabled")
+                    }
+                    else if (that.value == "Option"){
+                        document.getElementById("date").style.display = "none";
+                        document.getElementById("keyword").style.display = "none";
+                        alert("Please select a search criteria..");
+                    } else {
+                        document.getElementById("keyword").style.display = "block";
+                        document.getElementById("date").style.display = "none";
+                        document.getElementById("main_search").removeAttribute("disabled")
+                            }
+                        }
+            </script>
+            <div id="keyword" class="field" style="display: none;">
+                <div class="control">
+                    <label for="keyword">Keyword</label>
+                    <input class="input is-large" type="text" name="keyword" placeholder="Search String">
+                </div>
+            </div>
+            <div id="date" class="field" style="display: none;">
+                <div class="control">
+                    <label for="date">Date</label>
+                    <input class="input is-large" type="date" name="date" placeholder="Date">
+                </div>
+            </div>
+            <p></p>
+              <button id="main_search" class="button is-info is-medium" disabled="disabled">Search</button>
+              <button class="button is-info is-medium"><a href="{{ url_for('api_main.get_emp_records') }}">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+{% endblock %}

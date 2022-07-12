@@ -15,8 +15,8 @@ if [[ "$1" == '--new' ]];then
 elif [[ "$1" == '--old' ]];then
     source $PROJECT_DIR/utils/app_run.config && export $(cut -d= -f1 $PROJECT_DIR/utils/app_run.config)
     printf "Using the existing database...\n"
-    echo "Using the existing database..." >> $PROJECT_DIR/logs/$filename
-    python3 -m flask run --host=0.0.0.0 >> $PROJECT_DIR/logs/$filename 2>&1 &
+    echo "Using the existing database..." #>> $PROJECT_DIR/logs/$filename
+    python3 -m flask run --host=0.0.0.0 #>> $PROJECT_DIR/logs/$filename 2>&1 &
 
 else
     echo "Error: Incorrect Database Creation option specified.."

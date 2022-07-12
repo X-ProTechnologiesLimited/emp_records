@@ -18,9 +18,18 @@ body {
 }
 a { text-decoration: none; }
 
+div.sticky_2 {
+  position: -webkit-sticky;
+  position: fixed;
+  right: 0.1rem;
+  top: 10rem;
+  padding: 10px;
+  background-color: lightgreen;
+}
+
 
 .container {
-  max-width: 1200px;
+  max-width: 1800px;
   margin: 0 auto;
   width: 80%;
 }
@@ -52,11 +61,13 @@ a { text-decoration: none; }
   position: relative;
   font-size: 14;
   color: #def1f0;
+  width: 100%;
+  text-align: center;
 }
 
 .nav-fostrap li a {
-  padding: 15px 20px;
-  font-size: 14;
+  padding: 12px 15px;
+  font-size: 1.5rem;
   color: #def1f0;
   display: inline-block;
   outline: 0;
@@ -165,7 +176,7 @@ a { text-decoration: none; }
   display: inline-block;
   vertical-align: middle;
   width: 100%;
-  height: 50px;
+  height: 40px;
   margin: 0;
   position: absolute;
   top: 0px;
@@ -192,14 +203,14 @@ a { text-decoration: none; }
 }
 
 .navbar-fostrap span {
-  height: 2px;
+  height: 1px;
   background: #fff;
-  margin: 5px;
+  margin: 3px;
   display: block;
   width: 20px;
 }
 
-.navbar-fostrap span:nth-child(2) { width: 20px; }
+.navbar-fostrap span:nth-child(2) { width: 0px; }
 
 .navbar-fostrap span:nth-child(3) { width: 20px; }
 
@@ -280,6 +291,52 @@ a { text-decoration: none; }
   white-space: nowrap;
 }
 
+.button_view {
+  background-color: #03b1fc;
+  border-color: #dbdbdb;
+  cursor: pointer;
+  font-size : 15px;
+  border-radius: 13px;
+  box-shadow: 0 10px 12px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.button_ingest {
+  background-color: green;
+  border-color: #dbdbdb;
+  cursor: pointer;
+  font-size : 15px;
+  color : white;
+  border-radius: 13px;
+  box-shadow: 0 10px 12px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.button_meta {
+  background-color: cyan;
+  border-color: #dbdbdb;
+  cursor: pointer;
+  font-size : 15px;
+  border-radius: 13px;
+  box-shadow: 0 10px 12px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.button_assist {
+  background-color: orange;
+  border-color: #dbdbdb;
+  cursor: pointer;
+  font-size : 15px;
+  border-radius: 13px;
+  box-shadow: 0 10px 12px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.button_update {
+  background-color: yellow;
+  border-color: #dbdbdb;
+  cursor: pointer;
+  font-size : 15px;
+  border-radius: 13px;
+  box-shadow: 0 10px 12px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
 .is-block {
   display: block !important;
 }
@@ -304,7 +361,8 @@ table {
 }
 
 th {
-	text-align: left
+	text-align: left;
+    background: lightblue;
 }
 
 .table {
@@ -558,6 +616,14 @@ table th[class*=col-] {
 	.table-responsive>.table-bordered>tfoot>tr:last-child>td {
 		border-bottom: 0
 	}
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:active {
+  text-decoration: underline;
 }
 
 #Progress_Status {
