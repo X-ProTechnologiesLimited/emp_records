@@ -58,7 +58,7 @@ def signup_post():
     # add the new user to the database
     db.session.add(new_user)
     db.session.commit()
-    flash('User registered successfully')
+    # flash('User registered successfully')
     return redirect(url_for('auth.login'))
 
 
@@ -85,7 +85,7 @@ def create_emp_record():
 
 
 @auth.route('/employee/update', methods=['POST'])
-@login_required
+# @login_required
 def update_emp_record():
     id = request.form.get('Id')
     if request.method == 'POST':
@@ -134,7 +134,7 @@ def get_form_employee(id, action):
 
 @auth.route('/employee/delete', methods=['GET', 'POST'])
 @nocache
-@login_required
+# @login_required
 def delete_emp_record():
     """
     :author: Krishnendu Banerjee.

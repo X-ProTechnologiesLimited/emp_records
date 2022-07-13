@@ -54,10 +54,10 @@ def emp_details_form(json_data, id):
                                                 "border=2")
 
     linkUpdate = f'/employee/update/{id}'
-    linkTextUpdate = '<a href="{}">{}</a></button>'.format(linkUpdate, 'Update')
+    linkTextUpdate = '<a href="{}">{}</a></button>'.format(linkUpdate, 'Delete')
     linkDelete = f'/employee/delete/{id}'
-    linkTextDelete = '<a href="{}">{}</a></button>'.format(linkDelete, 'Delete')
-    linkBack = f'/employees'
+    linkTextDelete = '<a href="{}">{}</a></button>'.format(linkDelete, 'Update')
+    linkBack = f'#'
     linkTextBack = '<a href="{}">{}</a></button>'.format(linkBack, 'Back')
 
 

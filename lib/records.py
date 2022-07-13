@@ -25,7 +25,8 @@ def get_emp_records():
     for record in Emp_main.query.all():
         emp_data['Employees'].append({
             'Employee Id': record.id,
-            'Name': f'<a style="font-weight:bold" href="/get_emp_details/{record.id}"</a>{record.firstname} {record.lastname}',
+            # 'Name': f'<a style="font-weight:bold" href="/get_emp_details/{record.id}"</a>{record.firstname} {record.lastname}',
+            'Name': f'<a style="font-weight:bold" href="/get_emp_details/1"</a>{record.firstname} {record.lastname}',
             'Job Title': record.title,
             'Employment Status': record.status,
             'Employed Since': record.doj,
