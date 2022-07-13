@@ -1,10 +1,13 @@
-<!-- templates/base.html -->
-
 <!DOCTYPE html>
 <html>
+
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Employee Manager</title>
+    <title>Employee Portal</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/external.css') }}" />
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />-->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/stylesheet.css') }}" />
 </head>
 <style>
@@ -26,36 +29,49 @@
   margin-bottom: 12px; /* Add some space below the input */
 }
 </style>
+
 <body>
-<div id="main">
-  <div class="container">
-    <nav>
-      <div class="nav-fostrap">
-        <ul>
-          <li><a href="{{ url_for('api_main.index') }}">Employee Manager</a></li>
-        </ul>
-      </div>
-      <div class="nav-bg-fostrap">
-        <div class="navbar-fostrap"> <span></span> <span></span> <span></span>  </div>
-        <a href="{{ url_for('api_main.index') }}" class="title-mobile">Employee Manager</a>
-      </div>
-    </nav>
-    <div class='content'>
-    </div>
-</div>
-</div>
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <script>
-      var messages = {{ messages | safe }};
-      for (var i=0; i<messages.length; i++) {
-        alert(messages[i]);
-      }
-    </script>
-  {% endif %}
-{% endwith %}
-{% block content %}
-{% endblock %}
+    <section class="hero is-primary">
+
+        <div class="hero-head">
+            <nav class="navbar">
+                <div class="container">
+                    <div id="navbarMenuHeroA" class="navbar-menu">
+                        <div class="navbar-end">
+                            <a href="{{ url_for('main.index') }}" class="navbar-item">
+                                Home
+                            </a>
+                            {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('main.portal') }}" class="navbar-item">
+                                Employee Portal
+                            </a>
+                            {% endif %}
+                            {% if not current_user.is_authenticated %}
+                            <a href="{{ url_for('auth.login') }}" class="navbar-item">
+                                Login
+                            </a>
+                            <a href="{{ url_for('auth.signup') }}" class="navbar-item">
+                                Sign Up
+                            </a>
+                            {% endif %}
+                            {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('auth.logout') }}" class="navbar-item">
+                                Logout
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <div class="hero-body">
+            <div class="container">
+               {% block content %}
+               {% endblock %}
+            </div>
+        </div>
+    </section>
 <script>
 const myFunction = () => {
   const trs = document.querySelectorAll('#Error tr:not(.header)')

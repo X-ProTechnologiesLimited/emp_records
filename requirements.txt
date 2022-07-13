@@ -1,0 +1,6 @@
+requests==2.21.0
+werkzeug==2.0.3
+Flask==2.0.3
+Flask-SQLAlchemy==2.5.1
+Flask-Login==0.4.1
+w3lib==1.22.0

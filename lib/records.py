@@ -212,7 +212,7 @@ def search_emp_record(field, value):
                                          Emp_main.lastname.like(keyword))).count()
 
         if emp_data['Total'] == 0:  # If no employee records found in database
-            return errorchecker.no_employees_in_db()
+            return errorchecker.no_employees_match()
         else:
             json_data = dumps(emp_data)
 

@@ -1,42 +1,37 @@
-# lib/__init__.py
-"""
-Created on June 9th, 2022
-
-@author: Krishnendu Banerjee
-@summary: This file is responsible for creating the main flask application:
-
-"""
-import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 
-# Setting the flask jinja template render directories
 TEMPLATE_DIR = '../templates'
-STATIC_DIR = '../static'
 
-# Initializing the Database
+# init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
 
-# Creating the Flask Application for Asset Generator
 def create_app():
-    """
-    :author: Krishnendu Banerjee.
-    :date: 29/11/2019.
-    :description: Creates Main Flask Application for ADI manager.
-    :access: public.
-    """
-    app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
+    app = Flask(__name__, template_folder=TEMPLATE_DIR)
 
-    # Setting the Flask application configuration
-    app.config['SECRET_KEY'] = '9OLWxND4o83j4K4iuopO'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'  # Specifying the database file
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['DEBUG'] = True
-    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+    app.config['SECRET_KEY'] = 'secret-key-goes-here'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 
-    db.init_app(app) # Initialise the application
+    db.init_app(app)
 
-    from .api_main import api_main as api_main_blueprint  # Import the API module
-    app.register_blueprint(api_main_blueprint) # Register application
+    login_manager = LoginManager()
+    login_manager.login_view = 'auth.login'
+    login_manager.init_app(app)
 
-    return app # Creates and returns the flask application
+    from .models import User
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        # since the user_id is just the primary key of our user table, use it in the query for the user
+        return User.query.get(int(user_id))
+
+    # blueprint for auth routes in our app
+    from .auth import auth as auth_blueprint
+    app.register_blueprint(auth_blueprint)
+
+    # blueprint for non-auth parts of app
+    from .main import main as main_blueprint
+    app.register_blueprint(main_blueprint)
+
+    return app

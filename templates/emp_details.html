@@ -11,8 +11,15 @@ label {
 </style>
 <div class="container">
     <h2 class="title">Employee Details</h2>
-    <h3 class="title">Employee Profile</h3>
     <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="notification is-danger">
+        {{ messages[0] }}.
+        </div>
+        {% endif %}
+        {% endwith %}
+        <h3 class="has-text-centered"><strong>Employee Profile</strong></h3>
         <form method="POST" action="/employee/update">
             <div class="field">
                 <div class="control">
@@ -94,7 +101,7 @@ label {
                     <input class="input is-large" id="salary" type="number" step="1" pattern="\d+" name="salary" value='{{salary}}' placeholder="Annual Salary" autofocus="" required>
                 </div>
             </div>
-            <p><h3 class="title">Employee Contact</h3></p>
+            <p><h3 class="has-text-centered"><strong>Employee Contact</strong></h3></p><br>
             <div class="field">
                 <div class="control">
                     <label for="address">Address</label>
@@ -111,7 +118,7 @@ label {
                     <input class="input is-large" type="text" id="email" onkeyup="expand(this);" name="email" value='{{email}}' placeholder="Email" autofocus="" required>
                 </div>
             </div>
-            <p><h3 class="title">Employee Bank Details</h3></p>
+            <p><h3 class="has-text-centered"><strong>Employee Bank</strong></h3></p><br>
             <div class="field">
                 <div class="control">
                     <label for="bank">Bank Name</label>
@@ -124,7 +131,7 @@ label {
             </div>
             <br>
             <button class="button is-info is-medium">Update</button>
-            <button class="button is-info is-medium"><a href="{{ url_for('api_main.get_emp_records') }}">Cancel</button>
+            <button class="button is-info is-medium"><a href="{{ url_for('main.get_emp_records') }}">Cancel</button>
         </form>
     </div>
 </div>
