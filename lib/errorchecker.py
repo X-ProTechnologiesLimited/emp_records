@@ -13,7 +13,7 @@ from json2html import *
 
 errorchecker = Blueprint('errorchecker', __name__)
 basepath = path.dirname(__file__)
-html_outfile = path.abspath(path.join(basepath, "..", "templates", "search_response.html"))
+html_outfile = path.abspath(path.join(basepath, "../", "templates", "search_response.html"))
 
 def error_response_creator(message):
     """

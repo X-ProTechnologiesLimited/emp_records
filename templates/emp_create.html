@@ -10,9 +10,16 @@ label {
   text-align: left;
 </style>
 <div class="container">
-    <h2 class="title">Create Employee Record</h2>
-    <h3 class="title">Employee Profile</h3>
+    <h2 class="title">New Employee Record</h2>
     <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="notification is-danger">
+        {{ messages[0] }}.
+        </div>
+        {% endif %}
+        {% endwith %}
+        <h3>Employee Profile</h3><br>
         <form method="POST" action="/employee/new">
             <div class="field">
                 <div class="control">
@@ -77,7 +84,7 @@ label {
                     <input class="input is-large" id="salary" type="number" step="1" pattern="\d+" name="salary" placeholder="Annual Salary" autofocus="" required>
                 </div>
             </div>
-            <p><h3 class="title">Employee Contact</h3></p>
+            <p><h3>Employee Contact</h3></p><br>
             <div class="field">
                 <div class="control">
                     <input class="input is-large" id="address" type="text" name="address" onkeyup="expand(this);" placeholder="Address" autofocus="">
@@ -90,7 +97,7 @@ label {
                     <input class="input is-large" type="text" id="email" name="email" onkeyup="expand(this);" placeholder="Email" autofocus="" required>
                 </div>
             </div>
-            <p><h3 class="title">Employee Bank Details</h3></p>
+            <p><h3>Employee Bank Details</h3></p><br>
             <div class="field">
                 <div class="control">
                     <input class="input is-large" type="text" id="bank" name="bank" onkeyup="expand(this);" placeholder="Bank Name" autofocus="">

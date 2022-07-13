@@ -13,7 +13,7 @@ from w3lib.html import replace_entities
 
 response = Blueprint('response', __name__)
 basepath = path.dirname(__file__)
-html_outfile = path.abspath(path.join(basepath, "..", "templates", "search_response.html"))
+html_outfile = path.abspath(path.join(basepath, "../", "templates", "search_response.html"))
 
 
 def response_creator(message):
@@ -66,6 +66,13 @@ def emp_details_form(json_data, id):
         outf.write('{% extends "base.html" %}')
         outf.write('{% block content %}')
         outf.write('<p></p>')
+        outf.write('{% with messages = get_flashed_messages() %}')
+        outf.write('{% if messages %}')
+        outf.write('<div class="notification is-danger">')
+        outf.write('{{ messages[0] }}')
+        outf.write('</div>')
+        outf.write('{% endif %}')
+        outf.write('{% endwith %}')
         outf.write('<div class="container">')
         outf.write('<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Lookup data..." title="Type in a name">')
         outf.write(f'<button class="button is-info is-medium">{linkTextUpdate} ')
