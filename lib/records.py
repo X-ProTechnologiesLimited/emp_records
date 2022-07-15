@@ -20,10 +20,9 @@ def get_emp_records():
     :access: public.
     :return: Return all emp records in Database in JSON format
     """
-    emp_data = {}
-    emp_data['Employees'] = []
+    emp_data = []
     for record in Emp_main.query.all():
-        emp_data['Employees'].append({
+        emp_data.append({
             'Employee Id': record.id,
             'Name': f'<a style="font-weight:bold" href="/get_emp_details/{record.id}"</a>{record.firstname} {record.lastname}',
             'Job Title': record.title,
@@ -32,9 +31,7 @@ def get_emp_records():
             'Date of Birth': record.dob,
         })
 
-    emp_data['Total'] = Emp_main.query.count()
-
-    if emp_data['Total'] == 0:  # If no employee records found in database
+    if Emp_main.query.count() == 0:  # If no employee records found in database
         return errorchecker.no_employees_in_db()
     else:
         json_data = dumps(emp_data)
@@ -146,31 +143,28 @@ def get_emp_data(id):
     emp_contact = Emp_contact.query.filter_by(id=id).first()
     emp_bank = Emp_bank.query.filter_by(id=id).first()
     employee = {}
-    employee['Profile'] = {}
-    employee['Contact'] = {}
-    employee['Bank'] = {}
 
     if not emp_profile:
         return errorchecker.no_employees_in_db
 
-    employee['Profile']['Employee Id'] = emp_profile.id
-    employee['Profile']['Title'] = emp_profile.per_title
-    employee['Profile']['Firstname'] = emp_profile.firstname
-    employee['Profile']['Lastname'] = emp_profile.lastname
-    employee['Profile']['Job Title'] = emp_profile.title
-    employee['Profile']['Employment Type'] = emp_profile.type
-    employee['Profile']['Status'] = emp_profile.status
-    employee['Profile']['Date of Birth'] = emp_profile.dob
-    employee['Profile']['Employed Since'] = emp_profile.doj
-    employee['Profile']['Date of Leaving'] = emp_profile.dol
-    employee['Profile']['Salary'] = emp_profile.salary
-    employee['Contact']['Address'] = emp_contact.address
-    employee['Contact']['Phone Number'] = emp_contact.phone
-    employee['Contact']['Mobile Number'] = emp_contact.mobile
-    employee['Contact']['Email'] = emp_contact.email
-    employee['Bank']['Bank Name'] = emp_bank.bank
-    employee['Bank']['SortCode'] = emp_bank.sortcode
-    employee['Bank']['Account Number'] = emp_bank.account
+    employee['Employee Id'] = emp_profile.id
+    employee['Title'] = emp_profile.per_title
+    employee['Firstname'] = emp_profile.firstname
+    employee['Lastname'] = emp_profile.lastname
+    employee['Job Title'] = emp_profile.title
+    employee['Employment Type'] = emp_profile.type
+    employee['Status'] = emp_profile.status
+    employee['Date of Birth'] = emp_profile.dob
+    employee['Employed Since'] = emp_profile.doj
+    employee['Date of Leaving'] = emp_profile.dol
+    employee['Salary'] = emp_profile.salary
+    employee['Address'] = emp_contact.address
+    employee['Phone Number'] = emp_contact.phone
+    employee['Mobile Number'] = emp_contact.mobile
+    employee['Email'] = emp_contact.email
+    employee['Bank Name'] = emp_bank.bank
+    employee['SortCode'] = emp_bank.sortcode
+    employee['Account Number'] = emp_bank.account
 
     json_data = dumps(employee)
     return response.emp_details_form(json_data, id=id)
@@ -193,13 +187,12 @@ def search_emp_record(field, value):
         return errorchecker.no_employees_match()
 
     keyword = "%{}%".format(value)
-    emp_data = {}
-    emp_data['Employees'] = []
+    emp_data = []
     if ('Email' not in field) and ('Mobile' not in field):
         q = db.session.query(Emp_main)
         for record in q.filter(or_(getattr(Emp_main, emp_field_map[field]).like(keyword),
                                Emp_main.lastname.like(keyword))).all():
-            emp_data['Employees'].append({
+            emp_data.append({
                 'Employee Id': record.id,
                 'Name': f'<a style="font-weight:bold" href="/get_emp_details/{record.id}"</a>{record.firstname} {record.lastname}',
                 'Job Title': record.title,
@@ -208,10 +201,10 @@ def search_emp_record(field, value):
                 'Date of Birth': record.dob,
             })
 
-        emp_data['Total'] = q.filter(or_(getattr(Emp_main, emp_field_map[field]).like(keyword),
+        Total = q.filter(or_(getattr(Emp_main, emp_field_map[field]).like(keyword),
                                          Emp_main.lastname.like(keyword))).count()
 
-        if emp_data['Total'] == 0:  # If no employee records found in database
+        if Total == 0:  # If no employee records found in database
             return errorchecker.no_employees_match()
         else:
             json_data = dumps(emp_data)
@@ -224,7 +217,7 @@ def search_emp_record(field, value):
         emp_contact = q.filter(getattr(Emp_contact, emp_field_map[field]) == value).first()
         emp_id = emp_contact.id
         for record in Emp_main.query.filter_by(id=emp_id).all():
-            emp_data['Employees'].append({
+            emp_data.append({
                 'Employee Id': record.id,
                 'Name': f'<a style="font-weight:bold" href="/get_emp_details/{record.id}"</a>{record.firstname} {record.lastname}',
                 'Job Title': record.title,
@@ -233,9 +226,9 @@ def search_emp_record(field, value):
                 'Date of Birth': record.dob,
             })
 
-        emp_data['Total'] = Emp_main.query.filter_by(id=emp_id).count()
+        Total = Emp_main.query.filter_by(id=emp_id).count()
 
-        if emp_data['Total'] == 0:  # If no employee records found in database
+        if Total == 0:  # If no employee records found in database
             return errorchecker.no_employees_match()
         else:
             json_data = dumps(emp_data)

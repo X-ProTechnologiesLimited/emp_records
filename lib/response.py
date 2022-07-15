@@ -32,7 +32,7 @@ def response_creator(message):
 
 def emp_list_form(json_data):
     output = json2html.convert(json=json_data,
-                               table_attributes="id=\"Error\" class=\"table table-striped\"" 
+                               table_attributes="id=\"Error\" class=\"table table-hover\"" 
                                                 "border=2")
     output_escaped = replace_entities(output)
     with open(html_outfile, 'w') as outf:
@@ -50,7 +50,7 @@ def emp_list_form(json_data):
 
 def emp_details_form(json_data, id):
     output = json2html.convert(json=json_data,
-                               table_attributes="id=\"Error\" class=\"table table-striped\"" 
+                               table_attributes="id=\"Error\" class=\"table table-hover\"" 
                                                 "border=2")
 
     linkUpdate = f'/employee/update/{id}'
@@ -78,7 +78,7 @@ def emp_details_form(json_data, id):
         outf.write(f'<button class="button is-info is-medium">{linkTextUpdate} ')
         outf.write(f'<button class="button is-info is-medium">{linkTextDelete} ')
         outf.write(f'<button class="button is-info is-medium">{linkTextBack}')
-        outf.write('<p></p>')
+        outf.write('<br>&nbsp;</br>')
         outf.write(output_escaped)
         outf.write('</div>')
         outf.write('{% endblock %}')
