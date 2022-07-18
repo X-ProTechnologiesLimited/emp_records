@@ -1,7 +1,10 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect, flash, url_for
 from . import db
+from .forms import RegisterForm
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, current_user
 from . import records
+from .models import User
 import os, hashlib, os.path
 path_to_script = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_DIR = '../templates'
@@ -11,6 +14,30 @@ main = Blueprint('main', __name__)
 @main.route('/')
 def index():
     return render_template('index.html')
+
+
+@main.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = RegisterForm(request.form)
+    if form.validate_on_submit():
+        user = User(
+            email=form.email.data,
+            password=form.password.data,
+            name=form.name.data
+        )
+
+        # create a new user with the form data. Hash the password so the plaintext version isn't saved.
+        new_user = User(email=form.email.data, name=form.name.data,
+                        password=generate_password_hash(form.password.data, method='sha256'))
+
+        # add the new user to the database
+        db.session.add(new_user)
+        db.session.commit()
+        flash('User registered successfully')
+        return redirect(url_for('auth.login'))
+
+    return render_template('signup.html', form=form)
+
 
 @main.route('/portal')
 @login_required
