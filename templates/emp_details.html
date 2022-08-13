@@ -30,14 +30,14 @@ label {
             <div class="field">
                 <div class="control">
                     <label for="per_title">Title</label>
-                    <input class="input is-large" list="sal" id="per_title" type="text" name="per_title" placeholder="Title" value='{{per_title}}' autofocus="">
-                    <datalist id="sal">
-                      <option value="Mr">
-                      <option value="Mrs">
-                      <option value="Ms">
-                      <option value="Dr">
+                    <select class="input is-large" id="per_title" name="per_title" placeholder="Title">
+                      <option value="{{per_title}}">{{per_title}}</option>
+                        <option value="Mr">Mr</option>
+                        <option value="Mrs">Mrs</option>
+                        <option value="Ms">Ms</option>
+                        <option value="Dr">Dr</option>
                     </option>
-                    </datalist>
+                    </select>
                     </div>
             </div>
             <div class="field">
@@ -61,28 +61,28 @@ label {
             <div class="field">
                 <div class="control">
                     <label for="type">Employment Type</label>
-                    <input class="input is-large" list="emp_type" id="type" name="type" placeholder="Employment Type" value='{{type}}' autocomplete="off" autofocus="" required>
-                    <datalist id="emp_type">
-                      <option value="Permanent">
-                      <option value="Contractor">
-                      <option value="FTC">
-                      <option value="Undergraduate">
-                      <option value="Apprentice">
+                    <select class="input is-large" id="type" name="type" placeholder="Employment Type" required>
+                        <option value="{{type}}">{{type}}</option>
+                        <option value="Permanent">Permanent</option>
+                        <option value="Contractor">Contractor</option>
+                        <option value="FTC">FTC</option>
+                        <option value="Undergraduate">Undergraduate</option>
+                        <option value="Apprentice">Apprentice</option>
                     </option>
-                    </datalist>
+                    </select>
                     </div>
             </div>
             <div class="field">
                 <div class="control">
                     <label for="status">Employment Status</label>
-                    <input class="input is-large" list="emp_status" id="status" name="status" placeholder="Employment Status" value='{{status}}' autocomplete="off" autofocus="" required>
-                    <datalist id="emp_status">
-                      <option value="Active">
-                      <option value="Resigned">
-                      <option value="Terminated">
-                      <option value="Sabbatical">
+                    <select class="input is-large" id="status" name="status" placeholder="Employment Status" value='{{status}}' required>
+                        <option value="{{status}}">{{status}}</option>
+                        <option value="Active">Active</option>
+                        <option value="Resigned">Resigned</option>
+                        <option value="Terminated">Terminated</option>
+                        <option value="Sabbatical">Sabbatical</option>
                     </option>
-                    </datalist>
+                    </select>
                 </div>
             </div>
             <div class="field">
@@ -115,7 +115,7 @@ label {
                     <label for="mobile">Mobile Number</label>
                     <input class="input is-large" id="mobile" type="number" step="1" pattern="\d+" name="mobile" value='{{mobile}}' placeholder="Mobile Number" autofocus="" required>
                     <label for="email">Email</label>
-                    <input class="input is-large" type="text" id="email" onkeyup="expand(this);" name="email" value='{{email}}' placeholder="Email" autofocus="" required>
+                    <input class="input is-large" type="email" id="email" onkeyup="expand(this);" name="email" value='{{email}}' placeholder="Email" autofocus="" required>
                 </div>
             </div>
             <p><h3 class="has-text-centered"><strong>Employee Bank</strong></h3></p><br>

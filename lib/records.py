@@ -5,7 +5,7 @@ Created on June 09, 2022
 @summary: This file holds the functions to perform different search assets in the local database
 """
 import urllib.parse
-from flask import request, flash, redirect, url_for
+from flask import request, flash, redirect, url_for, render_template
 from .models import Emp_main, Emp_contact, Emp_bank
 from . import errorchecker, response, db
 from bson.json_util import dumps
