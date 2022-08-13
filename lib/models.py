@@ -1,13 +1,28 @@
+from sqlalchemy import event
 from flask_login import UserMixin
 from . import db
 
 class User(UserMixin, db.Model):
+    __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True) # primary keys are required by SQLAlchemy
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     name = db.Column(db.String(1000))
+    dob = db.Column(db.String(100))
+    is_admin = db.Column(db.Boolean, default=False)
+    is_verified = db.Column(db.Boolean, default=False)
+    attempt = db.Column(db.Integer)
+    is_locked = db.Column(db.Boolean, default=False)
+
+
+@event.listens_for(User.__table__, 'after_create')
+def create_user(*args, **kwargs):
+    db.session.add(User(name='HR Admin', email='admin@app.com', password='admin@123',
+                        is_admin=True, is_verified=True, attempt=0))
+    db.session.commit()
 
 class Emp_main(db.Model):
+    __tablename__ = 'Emp_main'
     id = db.Column(db.Integer, primary_key=True)  # primary keys are required by SQLAlchemy
     per_title = db.Column(db.String(100))
     firstname = db.Column(db.String(100))
@@ -21,6 +36,7 @@ class Emp_main(db.Model):
     salary = db.Column(db.Integer)
 
 class Emp_contact(db.Model):
+    __tablename__ = 'Emp_contact'
     id = db.Column(db.Integer, primary_key=True)  # primary keys are required by SQLAlchemy
     address = db.Column(db.String(500))
     phone = db.Column(db.Integer)
@@ -28,6 +44,7 @@ class Emp_contact(db.Model):
     email = db.Column(db.String(100), unique=True)
 
 class Emp_bank(db.Model):
+    __tablename__ = 'Emp_bank'
     id = db.Column(db.Integer, primary_key=True)  # primary keys are required by SQLAlchemy
     bank = db.Column(db.String(100))
     sortcode = db.Column(db.Integer)

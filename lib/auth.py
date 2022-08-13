@@ -2,11 +2,10 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user
 from .models import User
-from . import db
 from .nocache import nocache
-from . import errorchecker
 import os, hashlib, os.path
-from . import response, records
+from . import records
+from . import db
 path_to_script = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_DIR = '../templates'
 
@@ -27,13 +26,38 @@ def login_post():
 
     # check if the user actually exists
     # take the user-supplied password, hash it, and compare it to the hashed password in the database
-    if not user or not check_password_hash(user.password, password):
-        flash('Please check your login details and try again.')
+    if not user: # or not check_password_hash(user.password, password):
+        flash('Please check your login details and try again.', 'is-danger')
         return redirect(url_for('auth.login')) # if the user doesn't exist or password is wrong, reload the page
 
+    if user.attempt >= 4:
+        user.is_locked = True
+        db.session.add(user)
+        db.session.commit()
+        flash('You have locked your account.', 'is-danger')
+        return redirect(url_for('auth.login'))
+
+    if not check_password_hash(user.password, password):
+        user.attempt = user.attempt + 1
+        db.session.add(user)
+        db.session.commit()
+        flash('Incorrect Password. Please try again', 'is-danger')
+        return redirect(url_for('auth.login'))
+
     # if the above check passes, then we know the user has the right credentials
-    login_user(user, remember=remember)
-    return redirect(url_for('main.portal'))
+
+    if user.is_verified and not user.is_locked:
+        login_user(user, remember=remember)
+        user.attempt = 0
+        db.session.add(user)
+        db.session.commit()
+        if user.is_admin:
+            return redirect('/admin')
+        else:
+            return redirect(url_for('main.portal'))
+    else:
+        flash('Your user is not enabled. Please contact your HR Admin.', 'is-warning')
+        return redirect(url_for('auth.login'))
 
 @auth.route('/employee/new', methods=['GET', 'POST'])
 @login_required

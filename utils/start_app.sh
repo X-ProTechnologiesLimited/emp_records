@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 filestamp=`date +%H%M%S`
-filename=adi_app.log
+filename=emp_manager.log
 get_project_dir() { # Gets the root directory of the repository
     cd "${BASH_SOURCE[0]%*/*}/.." && pwd
 }
@@ -10,13 +10,13 @@ if [[ "$1" == '--new' ]];then
     rm -rf $PROJECT_DIR/lib/db.sqlite
     python3 $PROJECT_DIR/initialise_db.py
     printf "Created new database for application...\n"
-    python3 -m flask run --host=0.0.0.0 #>> $PROJECT_DIR/logs/$filename 2>&1 &
+    python3 -m flask run --host=0.0.0.0 >> $PROJECT_DIR/logs/$filename 2>&1 &
      
 elif [[ "$1" == '--old' ]];then
     source $PROJECT_DIR/utils/app_run.config && export $(cut -d= -f1 $PROJECT_DIR/utils/app_run.config)
     printf "Using the existing database...\n"
-    echo "Using the existing database..." #>> $PROJECT_DIR/logs/$filename
-    python3 -m flask run --host=0.0.0.0 #>> $PROJECT_DIR/logs/$filename 2>&1 &
+    echo "Using the existing database..." >> $PROJECT_DIR/logs/$filename
+    python3 -m flask run --host=0.0.0.0 >> $PROJECT_DIR/logs/$filename 2>&1 &
 
 else
     echo "Error: Incorrect Database Creation option specified.."

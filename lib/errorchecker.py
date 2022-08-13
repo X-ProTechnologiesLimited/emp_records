@@ -10,6 +10,7 @@ Created on June 01, 2020
 from flask import Blueprint, render_template
 from os import path
 from json2html import *
+from w3lib.html import replace_entities
 
 errorchecker = Blueprint('errorchecker', __name__)
 basepath = path.dirname(__file__)
@@ -26,12 +27,13 @@ def error_response_creator(message):
     """
     output = json2html.convert(json=message,
                                table_attributes="id=\"Error\" class=\"table table-striped\"" "border=2")
+    output_escaped = replace_entities(output)
     with open(html_outfile, 'w') as outf:
         outf.write('{% extends "base.html" %}')
         outf.write('{% block content %}')
         outf.write('<p></p>')
         outf.write('<div class="container">')
-        outf.write(output)
+        outf.write(output_escaped)
         outf.write('</div>')
         outf.write('{% endblock %}')
 
@@ -58,8 +60,8 @@ def not_implemented_yet():
 @errorchecker.errorhandler(404)
 def no_employees_in_db():
     message = {
-            'status': 404,
-            'message': 'No Employees are found in the database'
+            'Message': f'No employees found in your organisation, Create a <a style="font-weight:bold" href="/employee/new"</a>New Employee',
+            'Status': 404
         }
     return error_response_creator(message)
 
@@ -67,8 +69,8 @@ def no_employees_in_db():
 @errorchecker.errorhandler(404)
 def no_employees_match():
     message = {
-            'status': 404,
-            'message': 'No Employees are matched with the search conditions'
+            'Message': 'No Employees are matched with the search conditions',
+            'Status': 404,
         }
     return error_response_creator(message)
 
