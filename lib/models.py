@@ -11,7 +11,7 @@ class User(UserMixin, db.Model):
     dob = db.Column(db.String(100))
     is_admin = db.Column(db.Boolean, default=False)
     is_verified = db.Column(db.Boolean, default=False)
-    attempt = db.Column(db.Integer)
+    attempt = db.Column(db.Integer, default=0)
     is_locked = db.Column(db.Boolean, default=False)
 
 

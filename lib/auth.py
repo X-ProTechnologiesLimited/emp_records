@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 from .models import User
 from .nocache import nocache
+from .forms import SelfPasswordChange
 import os, hashlib, os.path
 from . import records
 from . import db
@@ -154,3 +155,27 @@ def delete_emp_record():
 def logout():
     logout_user()
     return redirect(url_for('main.index'))
+
+@auth.route('/change_password', methods=['GET', 'POST'])
+@login_required
+def modify_password():
+    form = SelfPasswordChange(request.form)
+    if form.validate_on_submit():
+        current_password = form.curr_password.data
+        new_pasword = form.password.data
+        user_id = current_user.id
+        user = User.query.filter_by(id=user_id).first()
+        if not check_password_hash(user.password, current_password):
+            flash('The current password doesnt match our records.', 'is-danger')
+            return redirect(url_for('auth.modify_password'))
+        else:
+            user.password = new_pasword
+            db.session.add(user)
+            db.session.commit()
+            flash('Password modified successfully.', 'is-success')
+            return render_template('message_banner.html', title='')
+
+    return render_template('self_modify_password.html', form=form)
+
+
+

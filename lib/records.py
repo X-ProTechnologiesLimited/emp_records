@@ -5,11 +5,14 @@ Created on June 09, 2022
 @summary: This file holds the functions to perform different search assets in the local database
 """
 import urllib.parse
+import random
+import string
 from flask import request, flash, redirect, url_for, render_template
-from .models import Emp_main, Emp_contact, Emp_bank
+from .models import User, Emp_main, Emp_contact, Emp_bank
 from . import errorchecker, response, db
+from .email import send_email
+from .token import generate_confirmation_token
 from bson.json_util import dumps
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc, or_
 
 def get_emp_records():
@@ -67,11 +70,25 @@ def create_emp_record():
                                      sortcode=request.form.get('sortcode'),
                                      account=request.form.get('account'))
 
+        fullname = f"{request.form.get('firstname')} {request.form.get('lastname')}"
+        password = get_random_password()
+        new_employee_user = User(email=request.form.get('email'),
+                                 password=password,
+                                 name=fullname,
+                                 dob=request.form.get('dob'))
+
         db.session.add(new_employee)
         db.session.add(new_employee_contact)
         db.session.add(new_employee_bank)
+        db.session.add(new_employee_user)
+
         try:
             db.session.commit()
+            token = generate_confirmation_token(request.form.get('email'))
+            confirm_url = url_for('main.confirm_email', token=token, _external=True)
+            html = render_template('activate.html', confirm_url=confirm_url, password=password)
+            subject = "Please confirm your email"
+            send_email(request.form.get('email'), subject, html)
             return True
         except exc.IntegrityError:
             db.session.rollback()
@@ -242,3 +259,8 @@ emp_field_map = {
     'Email': 'email',
     'Mobile': 'mobile',
 }
+
+def get_random_password():
+    characters = string.ascii_letters + string.digits + string.punctuation
+    password = ''.join(random.choice(characters) for i in range(8))
+    return password

@@ -85,7 +85,7 @@ def confirm_email(token):
         flash('You have confirmed your account. Thanks!', 'is-success')
 
     login_user(user)
-    return redirect(url_for('main.portal'))
+    return redirect(url_for('auth.modify_password'))
 
 
 @main.route('/request/reset_password', methods=['GET', 'POST'])
@@ -109,7 +109,6 @@ def password_reset():
 
 
 @main.route('/change/password/<token>', methods=['GET', 'POST'])
-# @login_required
 def password_confirm(token):
     form = PasswordChange(request.form)
     if form.validate_on_submit():
@@ -140,6 +139,7 @@ def portal():
 
 
 @main.route('/employees')
+@login_required
 def get_emp_records():
     """
     :author: Krishnendu Banerjee.
@@ -153,11 +153,13 @@ def get_emp_records():
 
 
 @main.route('/get_emp_details/<id>', methods=['GET'])
+@login_required
 def get_emp_details(id):
     return records.get_emp_data(id)
 
 
 @main.route('/employee/search', methods=['GET','POST'])
+@login_required
 def search_emp_record():
     if request.method == 'POST':
         field = request.form.get('Field')
