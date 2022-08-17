@@ -8,8 +8,17 @@ label {
   display: inline-block;
   width: 140px;
   text-align: left;
+}
+div#loading {
+    width: 60px;
+    height: 60px;
+    display: none;
+    background: url(/static/styles/Hourglass.gif) no-repeat;
+    cursor: wait;
+    }
 </style>
-<div class="container">
+<div id="loading"></div>
+<div id="form" class="container">
     <h2 class="title">New Employee Record</h2>
     <div class="box">
         {% with messages = get_flashed_messages() %}
@@ -24,7 +33,7 @@ label {
             <div class="field">
                 <div class="control">
                     <select class="input is-large" id="per_title" name="per_title" placeholder="Title">
-                      <option value="">Select</option>
+                      <option value="">Title</option>
                         <option value="Mr">Mr</option>
                         <option value="Mrs">Mrs</option>
                         <option value="Ms">Ms</option>
@@ -51,7 +60,7 @@ label {
             <div class="field">
                 <div class="control">
                     <select class="input is-large" id="type" name="type" placeholder="Employment Type" required>
-                        <option value="">Select</option>
+                        <option value="">Employment Type</option>
                         <option value="Permanent">Permanent</option>
                         <option value="Contractor">Contractor</option>
                         <option value="FTC">FTC</option>
@@ -64,11 +73,22 @@ label {
             <div class="field">
                 <div class="control">
                     <select class="input is-large" id="status" name="status" placeholder="Employment Status" required>
-                        <option value="">Select</option>
+                        <option value="">Employment Status</option>
                         <option value="Active">Active</option>
                         <option value="Resigned">Resigned</option>
                         <option value="Terminated">Terminated</option>
                         <option value="Sabbatical">Sabbatical</option>
+                    </option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <select class="input is-large" id="manager" name="manager" placeholder="Manager">
+                        <option value="">Manager</option>
+                        {% for item in emp_list %}
+                        <option value="{{item.firstname}} {{item.lastname}}">{{item.firstname}} {{item.lastname}}</option>
+                        {% endfor %}
                     </option>
                     </select>
                 </div>
@@ -107,7 +127,7 @@ label {
                 </div>
             </div>
             <br>
-            <button class="button is-block is-info is-medium is-fullwidth">Create Employee</button>
+            <button class="button is-block is-info is-medium is-fullwidth" onclick="loading();">Create Employee</button>
         </form>
     </div>
 </div>
@@ -150,4 +170,10 @@ label {
     style.width = Math.max(desiredW, textbox.startW) + 'px';
 }
   </script>
+<script type="text/javascript">// <![CDATA[
+        function loading(){
+            $("#loading").show();
+            $("#form").hide();
+        }
+// ]]></script>
 {% endblock %}

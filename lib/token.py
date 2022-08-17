@@ -1,16 +1,17 @@
 from itsdangerous import URLSafeTimedSerializer
+import os
 
 def generate_confirmation_token(email):
-    serializer = URLSafeTimedSerializer('my_precious')
-    return serializer.dumps(email, salt='my_precious_two')
+    serializer = URLSafeTimedSerializer(os.environ['SECURITY_PASSWORD'])
+    return serializer.dumps(email, salt=os.environ['SECURITY_PASSWORD_SALT'])
 
 
 def confirm_token(token, expiration=3600):
-    serializer = URLSafeTimedSerializer('my_precious')
+    serializer = URLSafeTimedSerializer(os.environ['SECURITY_PASSWORD'])
     try:
         email = serializer.loads(
             token,
-            salt='my_precious_two',
+            salt=os.environ['SECURITY_PASSWORD_SALT'],
             max_age=expiration
         )
     except:

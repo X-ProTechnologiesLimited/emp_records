@@ -55,13 +55,13 @@ label {
             <div class="field">
                 <div class="control">
                     <label for="title">Job Title</label>
-                    <input class="input is-large" id="title" name="title" onkeyup="expand(this);"  placeholder="Job Title"  value='{{title}}' autofocus="" autocomplete="off" required>
+                    <input class="input is-large" id="title" name="title" onkeyup="expand(this);"  placeholder="Job Title"  value='{{title}}' autofocus="" autocomplete="off" required {% if current_user.is_admin == False %}{% if current_user.is_manager == False %}disabled="true"{% endif %}{% endif %}>
                 </div>
             </div>
             <div class="field">
                 <div class="control">
                     <label for="type">Employment Type</label>
-                    <select class="input is-large" id="type" name="type" placeholder="Employment Type" required>
+                    <select class="input is-large" id="type" name="type" placeholder="Employment Type" required {% if current_user.is_admin == False %}{% if current_user.is_manager == False %}disabled="true"{% endif %}{% endif %}>
                         <option value="{{type}}">{{type}}</option>
                         <option value="Permanent">Permanent</option>
                         <option value="Contractor">Contractor</option>
@@ -75,7 +75,7 @@ label {
             <div class="field">
                 <div class="control">
                     <label for="status">Employment Status</label>
-                    <select class="input is-large" id="status" name="status" placeholder="Employment Status" value='{{status}}' required>
+                    <select class="input is-large" id="status" name="status" placeholder="Employment Status" value='{{status}}' required {% if current_user.is_admin == False %}{% if current_user.is_manager == False %}disabled="true"{% endif %}{% endif %}>
                         <option value="{{status}}">{{status}}</option>
                         <option value="Active">Active</option>
                         <option value="Resigned">Resigned</option>
@@ -87,18 +87,29 @@ label {
             </div>
             <div class="field">
                 <div class="control">
+                    <select class="input is-large" id="manager" name="manager" placeholder="Manager" {% if current_user.is_admin == False %}disabled="true"{% endif %}>
+                        <option value="{{manager}}">{{manager}}</option>
+                        {% for item in emp_list %}
+                        <option value="{{item.firstname}} {{item.lastname}}">{{item.firstname}} {{item.lastname}}</option>
+                        {% endfor %}
+                    </option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
                     <label for="dob">Date of Birth</label>
-                    <input class="textbox-n" type="text" id="dob" name= "dob" onfocus="(this.type='date')" onblur="(this.type='text')" value='{{dob}}' placeholder="Date of Birth" autofocus="" required>
+                    <input class="textbox-n" type="text" id="dob" name= "dob" onfocus="(this.type='date')" onblur="(this.type='text')" value='{{dob}}' placeholder="Date of Birth" autofocus="" required {% if current_user.is_admin == False %}disabled="true"{% endif %}>
                     <label for="doj">Employed Since</label>
-                    <input class="textbox-n" type="text" id="doj" name= "doj" onfocus="(this.type='date')" onblur="(this.type='text')" value='{{doj}}' placeholder="Employed Since" autofocus="" required>
+                    <input class="textbox-n" type="text" id="doj" name= "doj" onfocus="(this.type='date')" onblur="(this.type='text')" value='{{doj}}' placeholder="Employed Since" autofocus="" required {% if current_user.is_admin == False %}disabled="true"{% endif %}>
                     <label for="doj">Date of Leaving</label>
-                    <input class="textbox-n" type="text" id="dol" name= "dol" onfocus="(this.type='date')" onblur="(this.type='text')" value='{{dol}}' placeholder="Date of Leaving" autofocus="">
+                    <input class="textbox-n" type="text" id="dol" name= "dol" onfocus="(this.type='date')" onblur="(this.type='text')" value='{{dol}}' placeholder="Date of Leaving" autofocus="" {% if current_user.is_admin == False %}{% if current_user.is_manager == False %}disabled="true"{% endif %}{% endif %}>
                 </div>
             </div>
             <div class="field">
                 <div class="control">
                     <label for="salary">Salary</label>
-                    <input class="input is-large" id="salary" type="number" step="1" pattern="\d+" name="salary" value='{{salary}}' placeholder="Annual Salary" autofocus="" required>
+                    <input class="input is-large" id="salary" type="number" step="1" pattern="\d+" name="salary" value='{{salary}}' placeholder="Annual Salary" autofocus="" required {% if current_user.is_admin == False %}disabled="true"{% endif %}>
                 </div>
             </div>
             <p><h3 class="has-text-centered"><strong>Employee Contact</strong></h3></p><br>
@@ -115,7 +126,7 @@ label {
                     <label for="mobile">Mobile Number</label>
                     <input class="input is-large" id="mobile" type="number" step="1" pattern="\d+" name="mobile" value='{{mobile}}' placeholder="Mobile Number" autofocus="" required>
                     <label for="email">Email</label>
-                    <input class="input is-large" type="email" id="email" onkeyup="expand(this);" name="email" value='{{email}}' placeholder="Email" autofocus="" required>
+                    <input class="input is-large" type="email" id="email" onkeyup="expand(this);" name="email" value='{{email}}' placeholder="Email" autofocus="" required disabled="true">
                 </div>
             </div>
             <p><h3 class="has-text-centered"><strong>Employee Bank</strong></h3></p><br>

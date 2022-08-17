@@ -79,3 +79,26 @@ class PasswordChange(FlaskForm):
         if not initial_validation:
             return False
         return True
+
+class SelfPasswordChange(FlaskForm):
+    curr_password = PasswordField(
+        'password',
+        validators=[DataRequired(), Length(min=6, max=25)]
+    )
+    password = PasswordField(
+        'password',
+        validators=[DataRequired(), Length(min=6, max=25)]
+    )
+    confirm = PasswordField(
+        'Repeat password',
+        validators=[
+            DataRequired(),
+            EqualTo('password', message='Passwords must match.')
+        ]
+    )
+
+    def validate(self):
+        initial_validation = super(SelfPasswordChange, self).validate()
+        if not initial_validation:
+            return False
+        return True

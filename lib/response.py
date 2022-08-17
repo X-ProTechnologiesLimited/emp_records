@@ -48,7 +48,7 @@ def emp_list_form(json_data):
     return render_template('search_response.html')
 
 
-def emp_details_form(json_data, id):
+def emp_details_form(json_data, id, role):
     output = json2html.convert(json=json_data,
                                table_attributes="id=\"Error\" class=\"table table-hover\"" 
                                                 "border=2")
@@ -75,8 +75,11 @@ def emp_details_form(json_data, id):
         outf.write('{% endwith %}')
         outf.write('<div class="container">')
         outf.write('<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Lookup data..." title="Type in a name">')
-        outf.write(f'<button class="button is-info is-medium">{linkTextUpdate} ')
-        outf.write(f'<button class="button is-info is-medium">{linkTextDelete} ')
+        if role == 'admin':
+            outf.write(f'<button class="button is-info is-medium">{linkTextUpdate} ')
+            outf.write(f'<button class="button is-info is-medium">{linkTextDelete} ')
+        else:
+            outf.write(f'<button class="button is-info is-medium">{linkTextUpdate} ')
         outf.write(f'<button class="button is-info is-medium">{linkTextBack}')
         outf.write('<br>&nbsp;</br>')
         outf.write(output_escaped)

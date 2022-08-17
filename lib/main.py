@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, flash, url_for
+from flask import Blueprint, render_template, request, redirect, flash, url_for, abort
 from . import db
 from .email import send_email
 from .token import generate_confirmation_token, confirm_token
@@ -7,8 +7,8 @@ from sqlalchemy import event
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, current_user, login_user, login_manager
 from . import records
-from .models import User
-import os, hashlib, os.path
+from .models import User, Emp_contact, Emp_main
+import os.path
 path_to_script = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_DIR = '../templates'
 
@@ -35,7 +35,7 @@ def hash_user_password(target, value, oldvalue, initiator):
 
 @main.route('/')
 def index():
-    return render_template('index.html')
+    return redirect(url_for('auth.login'))
 
 
 @main.route('/signup', methods=['GET', 'POST'])
@@ -85,7 +85,7 @@ def confirm_email(token):
         flash('You have confirmed your account. Thanks!', 'is-success')
 
     login_user(user)
-    return redirect(url_for('main.portal'))
+    return redirect(url_for('auth.modify_password'))
 
 
 @main.route('/request/reset_password', methods=['GET', 'POST'])
@@ -109,7 +109,6 @@ def password_reset():
 
 
 @main.route('/change/password/<token>', methods=['GET', 'POST'])
-# @login_required
 def password_confirm(token):
     form = PasswordChange(request.form)
     if form.validate_on_submit():
@@ -136,10 +135,14 @@ def password_confirm(token):
 @main.route('/portal')
 @login_required
 def portal():
-    return render_template('portal.html', name=current_user.name)
+    if current_user.is_admin:
+        return render_template('portal.html', name=current_user.name)
+    else:
+        return render_template('emp_portal.html', name=current_user.name)
 
 
 @main.route('/employees')
+@login_required
 def get_emp_records():
     """
     :author: Krishnendu Banerjee.
@@ -149,21 +152,60 @@ def get_emp_records():
     :method: post
     :return: post: module: search; function: search_all_packages
     """
-    return records.get_emp_records()
+    if current_user.is_admin:
+        return records.get_emp_records('admin')
+    else:
+        return records.get_emp_records('employee')
 
+
+@main.route('/my_employees')
+@login_required
+def my_emp_records():
+    """
+    :author: Krishnendu Banerjee.
+    :date: 29/11/2019.
+    :description: Function that calls to API to search all assets on the database
+    :access: public
+    :method: post
+    :return: post: module: search; function: search_all_packages
+    """
+    user_id = current_user.id
+    user = User.query.filter_by(id=user_id).first()
+    emp_contact = Emp_contact.query.filter_by(email=user.email).first()
+    employee = Emp_main.query.filter_by(id=emp_contact.id).first()
+
+    fullname = f'{employee.firstname} {employee.lastname}'
+    return records.get_emp_records('manager', manager_name=fullname)
 
 @main.route('/get_emp_details/<id>', methods=['GET'])
+@login_required
 def get_emp_details(id):
-    return records.get_emp_data(id)
+    if current_user.is_admin:
+        return records.get_emp_data(id, 'admin')
+    else:
+        return abort(403)
 
+
+@main.route('/my_emp_details/<id>', methods=['GET'])
+@login_required
+def my_emp_details(id):
+    if records.verify_manager(id, current_user.id):
+        return records.get_emp_data(id, 'employee')
+    else:
+        return abort(403)
 
 @main.route('/employee/search', methods=['GET','POST'])
+@login_required
 def search_emp_record():
-    if request.method == 'POST':
-        field = request.form.get('Field')
-        if 'Date' in field:
-            return records.search_emp_record(field, request.form.get('date'))
+    if current_user.is_admin:
+        if request.method == 'POST':
+            field = request.form.get('Field')
+            if 'Date' in field:
+                return records.search_emp_record(field, request.form.get('date'))
+            else:
+                return records.search_emp_record(field, request.form.get('keyword'))
         else:
-            return records.search_emp_record(field, request.form.get('keyword'))
+            return render_template('search_employee.html', title='Search Employee', action='/employee/search')
+
     else:
-        return render_template('search_employee.html', title='Search Employee', action='/employee/search')
+        return abort(403)
