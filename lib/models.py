@@ -1,6 +1,7 @@
 from sqlalchemy import event
 from flask_login import UserMixin
 from . import db
+import os
 
 class User(UserMixin, db.Model):
     __tablename__ = 'User'
@@ -11,13 +12,15 @@ class User(UserMixin, db.Model):
     dob = db.Column(db.String(100))
     is_admin = db.Column(db.Boolean, default=False)
     is_verified = db.Column(db.Boolean, default=False)
+    is_manager = db.Column(db.Boolean, default=False)
     attempt = db.Column(db.Integer, default=0)
     is_locked = db.Column(db.Boolean, default=False)
 
 
 @event.listens_for(User.__table__, 'after_create')
 def create_user(*args, **kwargs):
-    db.session.add(User(name='HR Admin', email='admin@app.com', password='admin@123',
+    db.session.add(User(name=os.environ['hr_name'], email=os.environ['email'],
+                        password=os.environ['password'],
                         is_admin=True, is_verified=True, attempt=0))
     db.session.commit()
 
@@ -34,6 +37,7 @@ class Emp_main(db.Model):
     doj = db.Column(db.String(100))
     dol = db.Column(db.String(100))
     salary = db.Column(db.Integer)
+    manager = db.Column(db.String(100))
 
 class Emp_contact(db.Model):
     __tablename__ = 'Emp_contact'

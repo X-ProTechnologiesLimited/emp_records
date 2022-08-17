@@ -15,7 +15,7 @@ from .token import generate_confirmation_token
 from bson.json_util import dumps
 from sqlalchemy import exc, or_
 
-def get_emp_records():
+def get_emp_records(role, manager_name=None):
     """
     :author: Krishnendu Banerjee.
     :date: 09/06/2022.
@@ -24,14 +24,26 @@ def get_emp_records():
     :return: Return all emp records in Database in JSON format
     """
     emp_data = []
-    for record in Emp_main.query.all():
+    if role == 'manager':
+        employee_dataset = Emp_main.query.filter_by(manager=manager_name).all()
+    else:
+        employee_dataset = Emp_main.query.all()
+
+    for record in employee_dataset:
+        emp_contact_record = Emp_contact.query.filter_by(id=record.id).first()
+        if role == 'admin':
+            fullname = f'<a style="font-weight:bold" href="/get_emp_details/{record.id}"</a>{record.firstname} {record.lastname}'
+        elif role == 'manager':
+            fullname = f'<a style="font-weight:bold" href="/my_emp_details/{record.id}"</a>{record.firstname} {record.lastname}'
+        else:
+            fullname = f'{record.firstname} {record.lastname}'
         emp_data.append({
             'Employee Id': record.id,
-            'Name': f'<a style="font-weight:bold" href="/get_emp_details/{record.id}"</a>{record.firstname} {record.lastname}',
+            'Name': fullname,
             'Job Title': record.title,
+            'Manager': record.manager,
             'Employment Status': record.status,
-            'Employed Since': record.doj,
-            'Date of Birth': record.dob,
+            'Email': emp_contact_record.email,
         })
 
     if Emp_main.query.count() == 0:  # If no employee records found in database
@@ -59,7 +71,8 @@ def create_emp_record():
                                 status=request.form.get('status'),
                                 dob=request.form.get('dob'),
                                 doj=request.form.get('doj'),
-                                salary=request.form.get('salary'))
+                                salary=request.form.get('salary'),
+                                manager=request.form.get('manager'))
 
         new_employee_contact = Emp_contact(address=request.form.get('address'),
                                            phone=request.form.get('phone'),
@@ -98,28 +111,36 @@ def create_emp_record():
         return errorchecker.internal_server_error()
 
 
-def update_emp_record(id):
+def update_emp_record(id, role=None):
     try:
-        emp_profile = Emp_main.query.filter_by(id=id).first()
-        emp_contact = Emp_contact.query.filter_by(id=id).first()
-        emp_bank = Emp_bank.query.filter_by(id=id).first()
-        emp_profile = Emp_main.query.filter_by(id=id).update(dict(per_title=request.form.get('per_title'),
+        if role == 'employee':
+            emp_profile = Emp_main.query.filter_by(id=id).update(dict(per_title=request.form.get('per_title'),
+                                                                      firstname=request.form.get('firstname'),
+                                                                      lastname=request.form.get('lastname')))
+
+            emp_contact = Emp_contact.query.filter_by(id=id).update(dict(address=request.form.get('address'),
+                                                                         phone=request.form.get('phone'),                                                                  mobile=request.form.get('mobile')))
+
+        else:
+            emp_profile = Emp_main.query.filter_by(id=id).update(dict(per_title=request.form.get('per_title'),
                                                                   firstname=request.form.get('firstname'),
+                                                                  lastname=request.form.get('lastname'),
                                                                   title=request.form.get('title'),
                                                                   type=request.form.get('type'),
                                                                   status=request.form.get('status'),
+                                                                  manager=request.form.get('manager'),
                                                                   dob=request.form.get('dob'),
                                                                   doj=request.form.get('doj'),
                                                                   dol=request.form.get('dol'),
                                                                   salary=request.form.get('salary')))
-        emp_contact = Emp_contact.query.filter_by(id=id).update(dict(address=request.form.get('address'),
+
+            emp_contact = Emp_contact.query.filter_by(id=id).update(dict(address=request.form.get('address'),
                                                                      phone=request.form.get('phone'),
-                                                                     mobile=request.form.get('mobile'),
-                                                                     email=request.form.get('email')))
+                                                                     mobile=request.form.get('mobile')))
+
         emp_bank = Emp_bank.query.filter_by(id=id).update(dict(bank=request.form.get('bank'),
                                                                sortcode=request.form.get('sortcode'),
                                                                account=request.form.get('account')))
-
 
         db.session.commit()
         return True
@@ -140,12 +161,16 @@ def delete_emp_record(id):
     if not employee:
         return errorchecker.no_employees_in_db()
 
+    emp_contact = Emp_contact.query.filter_by(id=id).first()
+    user = User.query.filter_by(email=emp_contact.email).first()
+
     try:
         Emp_main.query.filter_by(id=id).delete()
         Emp_contact.query.filter_by(id=id).delete()
         Emp_bank.query.filter_by(id=id).delete()
+        User.query.filter_by(id=user.id).delete()
         db.session.commit()
-        return get_emp_records()
+        return get_emp_records('admin')
     except:
         return errorchecker.internal_server_error()
 
@@ -155,7 +180,7 @@ def get_emp_name(id):
     name = f'{employee.firstname} {employee.lastname}'
     return name
 
-def get_emp_data(id):
+def get_emp_data(id, role):
     emp_profile = Emp_main.query.filter_by(id=id).first()
     emp_contact = Emp_contact.query.filter_by(id=id).first()
     emp_bank = Emp_bank.query.filter_by(id=id).first()
@@ -171,6 +196,7 @@ def get_emp_data(id):
     employee['Job Title'] = emp_profile.title
     employee['Employment Type'] = emp_profile.type
     employee['Status'] = emp_profile.status
+    employee['Manager'] = emp_profile.manager
     employee['Date of Birth'] = emp_profile.dob
     employee['Employed Since'] = emp_profile.doj
     employee['Date of Leaving'] = emp_profile.dol
@@ -184,7 +210,7 @@ def get_emp_data(id):
     employee['Account Number'] = emp_bank.account
 
     json_data = dumps(employee)
-    return response.emp_details_form(json_data, id=id)
+    return response.emp_details_form(json_data, id=id, role=role)
 
 
 def get_emp_profile(id):
@@ -264,3 +290,18 @@ def get_random_password():
     characters = string.ascii_letters + string.digits + string.punctuation
     password = ''.join(random.choice(characters) for i in range(8))
     return password
+
+def verify_manager(employee_id, manager_id):
+    employee = Emp_main.query.filter_by(id=employee_id).first()
+    user = User.query.filter_by(id=manager_id).first()
+    manager_contact = Emp_contact.query.filter_by(email=user.email).first()
+    manager = Emp_main.query.filter_by(id=manager_contact.id).first()
+    if employee.manager == f'{manager.firstname} {manager.lastname}':
+        if not user.is_manager:
+            user.is_manager = True
+            db.session.commit()
+            return True
+        else:
+            return True
+    else:
+        return False

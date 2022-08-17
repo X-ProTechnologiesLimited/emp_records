@@ -9,6 +9,6 @@ def send_email(to, subject, template):
         subject,
         recipients=[to],
         html=template,
-        sender='xprotech.contact@gmail.com'
+        sender='Employee Manager'
     )
     mail.send(msg)
