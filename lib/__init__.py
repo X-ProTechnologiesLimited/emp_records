@@ -6,6 +6,7 @@ from flask_mail import Mail
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
 from datetime import timedelta
+import os
 
 
 TEMPLATE_DIR = '../templates'
@@ -21,13 +22,13 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=5)
     app.config['SESSION_REFRESH_EACH_REQUEST'] = True
-    app.config['SECURITY_PASSWORD_SALT'] = 'my_precious_two'
-    app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
-    app.config['MAIL_PORT'] = 465
     app.config['MAIL_USE_TLS'] = False
     app.config['MAIL_USE_SSL'] = True
-    app.config['MAIL_USERNAME'] = 'xprotech.contact@gmail.com'
-    app.config['MAIL_PASSWORD'] = 'fwgvkonzuriefrrv'
+    app.config['SECURITY_PASSWORD_SALT'] = os.environ['SECURITY_PASSWORD_SALT']
+    app.config['MAIL_SERVER'] = os.environ['MAIL_SERVER']
+    app.config['MAIL_PORT'] = os.environ['MAIL_PORT']
+    app.config['MAIL_USERNAME'] = os.environ['MAIL_USERNAME']
+    app.config['MAIL_PASSWORD'] = os.environ['MAIL_PASSWORD']
 
     from .models import User, Emp_main
 
@@ -43,13 +44,13 @@ def create_app():
 
     class MyModelView(ModelView):
         column_searchable_list = ('name', 'email',)
-        column_list = ('name', 'email', 'dob', 'is_admin', 'is_verified', 'is_locked', 'attempt')
+        column_exclude_list = ('password')
         column_default_sort = 'name'
         column_filters = ('name', 'email')
         column_editable_list = ('is_admin', 'is_verified', 'is_locked')
         form_create_rules = ('email', 'name', 'password', 'dob', 'is_admin',
                              'is_verified', 'attempt', 'is_locked')
-        form_edit_rules = ('email', 'name', 'dob', 'is_admin', 'is_verified', 'is_locked')
+        form_edit_rules = ('email', 'name', 'dob', 'is_admin', 'is_verified', 'is_locked', 'is_manager')
 
         def is_accessible(self):
             if current_user.is_authenticated and current_user.is_admin is True:

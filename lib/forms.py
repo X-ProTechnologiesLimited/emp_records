@@ -1,14 +1,14 @@
 from flask_wtf import FlaskForm
-from wtforms import TextField, PasswordField, DateField
+from wtforms import StringField, PasswordField, DateField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 
 from .models import User
 
 class RegisterForm(FlaskForm):
-    email = TextField(
+    email = StringField(
         'email',
         validators=[DataRequired(), Email(message=None), Length(min=6, max=40)])
-    name = TextField(
+    name = StringField(
         'name',
         validators=[DataRequired()])
     password = PasswordField(
@@ -39,10 +39,10 @@ class RegisterForm(FlaskForm):
 
 
 class PasswordReset(FlaskForm):
-    email = TextField(
+    email = StringField(
         'email',
         validators=[DataRequired(), Email(message=None), Length(min=6, max=40)])
-    dob = TextField(
+    dob = StringField(
         'dob',
         validators=[DataRequired()]
     )

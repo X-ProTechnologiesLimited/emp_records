@@ -33,7 +33,7 @@ div#loading {
             <div class="field">
                 <div class="control">
                     <select class="input is-large" id="per_title" name="per_title" placeholder="Title">
-                      <option value="">Select</option>
+                      <option value="">Title</option>
                         <option value="Mr">Mr</option>
                         <option value="Mrs">Mrs</option>
                         <option value="Ms">Ms</option>
@@ -60,7 +60,7 @@ div#loading {
             <div class="field">
                 <div class="control">
                     <select class="input is-large" id="type" name="type" placeholder="Employment Type" required>
-                        <option value="">Select</option>
+                        <option value="">Employment Type</option>
                         <option value="Permanent">Permanent</option>
                         <option value="Contractor">Contractor</option>
                         <option value="FTC">FTC</option>
@@ -73,11 +73,22 @@ div#loading {
             <div class="field">
                 <div class="control">
                     <select class="input is-large" id="status" name="status" placeholder="Employment Status" required>
-                        <option value="">Select</option>
+                        <option value="">Employment Status</option>
                         <option value="Active">Active</option>
                         <option value="Resigned">Resigned</option>
                         <option value="Terminated">Terminated</option>
                         <option value="Sabbatical">Sabbatical</option>
+                    </option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <select class="input is-large" id="manager" name="manager" placeholder="Manager">
+                        <option value="">Manager</option>
+                        {% for item in emp_list %}
+                        <option value="{{item.firstname}} {{item.lastname}}">{{item.firstname}} {{item.lastname}}</option>
+                        {% endfor %}
                     </option>
                     </select>
                 </div>

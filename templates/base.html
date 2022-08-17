@@ -32,34 +32,22 @@
 
 <body>
     <section class="hero is-primary">
-
         <div class="hero-head">
             <nav class="navbar">
                 <div class="container">
                     <div id="navbarMenuHeroA" class="navbar-menu">
                         <div class="navbar-end">
-                            <a href="{{ url_for('main.index') }}" class="navbar-item">
-                                Home
-                            </a>
                             {% if current_user.is_authenticated %}
-                            <a href="{{ url_for('main.portal') }}" class="navbar-item">
-                                Employee Portal
-                            </a>
                             {% if current_user.is_admin == True %}
                             <a href="/admin" class="navbar-item">
-                                Admin
+                                Manage Users
                             </a>
                             {% endif %}
-                            {% endif %}
-                            {% if not current_user.is_authenticated %}
-                            <a href="{{ url_for('auth.login') }}" class="navbar-item">
-                                Login
-                            </a>
-                            <a href="{{ url_for('main.signup') }}" class="navbar-item">
-                                Sign Up
-                            </a>
                             {% endif %}
                             {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('main.portal') }}" class="navbar-item">
+                                Portal
+                            </a>
                             <a href="{{ url_for('auth.modify_password') }}" class="navbar-item">
                                 Change Password
                             </a>
@@ -70,6 +58,11 @@
                         </div>
                     </div>
                 </div>
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                <span aria-hidden="true"></span>
+                    <p></p>
+                <span aria-hidden="true"></span>
+                </a>
             </nav>
         </div>
 
@@ -95,6 +88,23 @@ const myFunction = () => {
 
   trs.forEach(setTrStyleDisplay)
 }
+</script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"
+          integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+          crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+
+  // Check for click events on the navbar burger icon
+  $(".navbar-burger").click(function() {
+
+      // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+      $(".navbar-burger").toggleClass("is-active");
+      $(".navbar-menu").toggleClass("is-active");
+
+  });
+});
 </script>
 </body>
 </html>
